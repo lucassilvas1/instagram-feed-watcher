@@ -1,0 +1,28 @@
+{
+  "name": "instagram-feed-watcher",
+  "version": "0.1.0",
+  "description": "A simple TypeScript library to help scrape the Instagram Following feed",
+  "author": "Lucas Silva <lucass_silvas@hotmail.com>",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "instagram",
+    "scraper",
+    "feed"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.8",
+    "puppeteer": "^22.6.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lucassilvas1/instagram-feed-watcher"
+  }
+}

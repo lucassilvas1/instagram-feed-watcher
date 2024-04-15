@@ -1,0 +1,6 @@
+*.html
+*.js
+*.env
+node_modules
+resources/*
+dist
