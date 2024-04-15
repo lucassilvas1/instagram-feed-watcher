@@ -1,6 +1,6 @@
 {
   "name": "instagram-feed-watcher",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A simple TypeScript library to help scrape the Instagram Following feed",
   "author": "Lucas Silva <lucass_silvas@hotmail.com>",
   "main": "dist/index.js",
