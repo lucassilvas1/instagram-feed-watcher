@@ -1,0 +1,8 @@
+*.html
+*.js
+*.env
+node_modules
+src
+resources/*
+tsconfig.json
+
