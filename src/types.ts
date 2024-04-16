@@ -24,7 +24,7 @@ export type Post = {
   inventory_source: string;
   explore: any;
   main_feed_carousel_starting_media_id: any;
-  carousel_media?: CarouselMedia[];
+  carousel_media: null | CarouselMedia[];
   audience: any;
   is_seen: boolean;
   media_type: number;
@@ -34,10 +34,10 @@ export type Post = {
   media_overlay_info: any;
   user: User;
   carousel_parent_id: any;
-  is_dash_eligible?: number;
-  number_of_qualities?: number;
-  video_dash_manifest?: string;
-  video_versions?: VideoVersion[];
+  is_dash_eligible: null | number;
+  number_of_qualities: null | number;
+  video_dash_manifest: null | string;
+  video_versions: null | VideoVersion[];
   clips_attribution_info: any;
   image_versions2: ImageVersions2;
   share_urls: any;
@@ -45,15 +45,15 @@ export type Post = {
   can_viewer_reshare: boolean;
   ig_media_sharing_disabled: boolean;
   visibility: any;
-  usertags?: Usertags;
-  clips_metadata?: ClipsMetadata;
+  usertags: null | Usertags;
+  clips_metadata: null | ClipsMetadata;
   feed_demotion_control: any;
   feed_recs_demotion_control: any;
-  coauthor_producers?: CoauthorProducer[];
+  coauthor_producers: null | CoauthorProducer[];
   comments_disabled: any;
   like_and_view_counts_disabled: boolean;
-  photo_of_you?: boolean;
-  location?: Location;
+  photo_of_you: null | boolean;
+  location: null | Location;
   top_likers: string[];
   facepile_top_likers: FacepileTopLiker[];
   like_count: number;
@@ -61,7 +61,7 @@ export type Post = {
   social_context: SocialContext[];
   saved_collection_ids: any;
   has_viewer_saved: any;
-  caption?: Caption;
+  caption: null | Caption;
   can_reshare: any;
   expiring_at: any;
   link: any;
@@ -70,9 +70,9 @@ export type Post = {
   organic_tracking_token: string;
   logging_info_token: string;
   sharing_friction_info: SharingFrictionInfo;
-  accessibility_caption?: string;
+  accessibility_caption: null | string;
   invited_coauthor_producers: any[];
-  carousel_media_count?: number;
+  carousel_media_count: null | number;
   follow_hashtag_info: any;
   is_paid_partnership: boolean;
   affiliate_info: any;
@@ -80,14 +80,14 @@ export type Post = {
   caption_is_edited: boolean;
   comments: Comment[];
   comment_count: number;
-  commenting_disabled_for_viewer?: boolean;
-  preview?: string;
+  commenting_disabled_for_viewer: null | boolean;
+  preview: null | string;
   headline: any;
   can_see_insights_as_brand: boolean;
   boosted_status: any;
   boost_unavailable_identifier: any;
   boost_unavailable_reason: any;
-  has_audio?: boolean;
+  has_audio: null | boolean;
 };
 
 export type PostOwner = {
@@ -127,22 +127,22 @@ export type CarouselMedia = {
   original_width: number;
   media_type: number;
   carousel_parent_id: string;
-  is_dash_eligible?: number;
-  number_of_qualities?: number;
-  video_dash_manifest?: string;
-  video_versions?: VideoVersion[];
+  is_dash_eligible: null | number;
+  number_of_qualities: null | number;
+  video_dash_manifest: null | string;
+  video_versions: null | VideoVersion[];
   link: any;
   story_cta: any;
-  accessibility_caption?: string;
+  accessibility_caption: null | string;
   image_versions2: ImageVersions2;
-  usertags?: Usertags;
+  usertags: null | Usertags;
   media_overlay_info: any;
   carousel_media: any;
   headline: any;
   sharing_friction_info: SharingFrictionInfo;
-  preview?: string;
+  preview: null | string;
   organic_tracking_token: any;
-  has_audio?: boolean;
+  has_audio: null | boolean;
 };
 
 export type VideoVersion = {
@@ -175,7 +175,7 @@ export type Usertags = {
 };
 
 export type TaggedUser = {
-  pk: string;
+  pk?: string;
   full_name: string;
   is_verified: boolean;
   profile_pic_url: string;
@@ -206,8 +206,8 @@ export type User = {
 
 export type ClipsMetadata = {
   achievements_info: AchievementsInfo;
-  music_info?: MusicInfo;
-  original_sound_info?: OriginalSoundInfo;
+  music_info: null | MusicInfo;
+  original_sound_info: null | OriginalSoundInfo;
 };
 
 export type AchievementsInfo = {
@@ -263,8 +263,8 @@ export type CoauthorProducer = {
 
 export type Location = {
   pk: number;
-  lat?: number;
-  lng?: number;
+  lat: null | number;
+  lng: null | number;
   name: string;
   profile_pic_url: any;
 };
@@ -291,7 +291,7 @@ export type SocialContextFacepileUser = {
 export type Caption = {
   text: string;
   pk: string;
-  has_translation?: boolean;
+  has_translation: null | boolean;
 };
 
 export type Comment = {
