@@ -10,7 +10,7 @@ import {
 import puppeteer from "puppeteer";
 import { random, sleep } from "./utils";
 
-type Listener = (posts: Post) => void;
+type Listener = (posts: Post[]) => void;
 /**
  * Intervals are used to randomize waiting and cooldowns
  */
@@ -238,12 +238,14 @@ export class Watcher {
     const onChange = async (posts: Post[]) => {
       latest = [];
 
-      for (const post of posts) {
-        latest.push(post.id);
-        if (watched.has(post.id)) continue;
-        listener(post);
-        watched.set(post.id, 0);
-      }
+      listener(
+        posts.filter((post) => {
+          latest.push(post.id);
+          if (watched.has(post.id)) return false;
+          watched.set(post.id, 0);
+          return true;
+        })
+      );
     };
 
     this.#listeners.set(symbol, onChange);
