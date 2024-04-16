@@ -45,7 +45,7 @@ export interface Post {
   can_viewer_reshare: boolean;
   ig_media_sharing_disabled: boolean;
   visibility: any;
-  usertags?: Usertags;
+  usertags?: Usertags[];
   clips_metadata?: ClipsMetadata;
   feed_demotion_control: any;
   feed_recs_demotion_control: any;
@@ -135,7 +135,7 @@ export interface CarouselMedia {
   story_cta: any;
   accessibility_caption?: string;
   image_versions2: ImageVersions2;
-  usertags?: Usertags;
+  usertags?: Usertags[];
   media_overlay_info: any;
   carousel_media: any;
   headline: any;
