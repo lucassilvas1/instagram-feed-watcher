@@ -1,9 +1,9 @@
-export interface NodeContainer {
+export type NodeContainer = {
   node: Node;
   cursor: string;
-}
+};
 
-export interface Node {
+export type Node = {
   media: Post;
   ad: any;
   explore_story: any;
@@ -12,9 +12,9 @@ export interface Node {
   suggested_users: any;
   bloks_netego: any;
   __typename: string;
-}
+};
 
-export interface Post {
+export type Post = {
   id: string;
   owner: PostOwner;
   view_state_item_type: any;
@@ -45,7 +45,7 @@ export interface Post {
   can_viewer_reshare: boolean;
   ig_media_sharing_disabled: boolean;
   visibility: any;
-  usertags?: Usertags[];
+  usertags?: Usertags;
   clips_metadata?: ClipsMetadata;
   feed_demotion_control: any;
   feed_recs_demotion_control: any;
@@ -88,9 +88,9 @@ export interface Post {
   boost_unavailable_identifier: any;
   boost_unavailable_reason: any;
   has_audio?: boolean;
-}
+};
 
-export interface PostOwner {
+export type PostOwner = {
   pk: string;
   id: string;
   username: string;
@@ -107,9 +107,9 @@ export interface PostOwner {
   transparency_product: any;
   transparency_product_enabled: boolean;
   transparency_label: any;
-}
+};
 
-export interface FriendshipStatus {
+export type FriendshipStatus = {
   following: boolean;
   blocking: any;
   is_feed_favorite: boolean;
@@ -118,9 +118,9 @@ export interface FriendshipStatus {
   incoming_request: any;
   is_restricted: boolean;
   is_bestie: boolean;
-}
+};
 
-export interface CarouselMedia {
+export type CarouselMedia = {
   pk: string;
   id: string;
   original_height: number;
@@ -135,7 +135,7 @@ export interface CarouselMedia {
   story_cta: any;
   accessibility_caption?: string;
   image_versions2: ImageVersions2;
-  usertags?: Usertags[];
+  usertags?: Usertags;
   media_overlay_info: any;
   carousel_media: any;
   headline: any;
@@ -143,47 +143,47 @@ export interface CarouselMedia {
   preview?: string;
   organic_tracking_token: any;
   has_audio?: boolean;
-}
+};
 
-export interface VideoVersion {
+export type VideoVersion = {
   type: number;
   url: string;
   width: number;
   height: number;
-}
+};
 
-export interface ImageVersions2 {
+export type ImageVersions2 = {
   candidates: Candidate[];
-}
+};
 
-export interface Candidate {
+export type Candidate = {
   url: string;
   height: number;
   width: number;
-}
+};
 
-export interface SharingFrictionInfo {
+export type SharingFrictionInfo = {
   bloks_app_url: any;
   should_have_sharing_friction: boolean;
-}
+};
 
-export interface Usertags {
+export type Usertags = {
   in: {
     position: number[];
     user: TaggedUser;
-  };
-}
+  }[];
+};
 
-export interface TaggedUser {
+export type TaggedUser = {
   pk: string;
   full_name: string;
   is_verified: boolean;
   profile_pic_url: string;
   username: string;
   id: string;
-}
+};
 
-export interface User {
+export type User = {
   pk: string;
   id: string;
   username: string;
@@ -202,56 +202,56 @@ export interface User {
   full_name: string;
   is_embeds_disabled: any;
   latest_reel_media: number;
-}
+};
 
-export interface ClipsMetadata {
+export type ClipsMetadata = {
   achievements_info: AchievementsInfo;
   music_info?: MusicInfo;
   original_sound_info?: OriginalSoundInfo;
-}
+};
 
-export interface AchievementsInfo {
+export type AchievementsInfo = {
   show_achievements: boolean;
-}
+};
 
-export interface MusicInfo {
+export type MusicInfo = {
   music_asset_info: MusicAssetInfo;
   music_consumption_info: MusicConsumptionInfo;
-}
+};
 
-export interface MusicAssetInfo {
+export type MusicAssetInfo = {
   audio_cluster_id: string;
   title: string;
   display_artist: string;
   is_explicit: boolean;
-}
+};
 
-export interface MusicConsumptionInfo {
+export type MusicConsumptionInfo = {
   should_mute_audio: boolean;
   should_mute_audio_reason: string;
   is_trending_in_clips: boolean;
-}
+};
 
-export interface OriginalSoundInfo {
+export type OriginalSoundInfo = {
   audio_asset_id: string;
   original_audio_title: string;
   ig_artist: IgArtist;
   is_explicit: boolean;
   should_mute_audio: boolean;
   consumption_info: ConsumptionInfo;
-}
+};
 
-export interface IgArtist {
+export type IgArtist = {
   username: string;
   id: string;
-}
+};
 
-export interface ConsumptionInfo {
+export type ConsumptionInfo = {
   should_mute_audio_reason: string;
   is_trending_in_clips: boolean;
-}
+};
 
-export interface CoauthorProducer {
+export type CoauthorProducer = {
   pk: string;
   id: string;
   is_unpublished: any;
@@ -259,42 +259,42 @@ export interface CoauthorProducer {
   profile_pic_url: string;
   full_name: string;
   is_verified: boolean;
-}
+};
 
-export interface Location {
+export type Location = {
   pk: number;
   lat?: number;
   lng?: number;
   name: string;
   profile_pic_url: any;
-}
+};
 
-export interface FacepileTopLiker {
+export type FacepileTopLiker = {
   profile_pic_url: string;
   id: string;
-}
+};
 
-export interface SocialContext {
+export type SocialContext = {
   social_context_type: string;
   social_context_users_count: number;
   social_context_facepile_users: SocialContextFacepileUser[];
   __typename: string;
-}
+};
 
-export interface SocialContextFacepileUser {
+export type SocialContextFacepileUser = {
   profile_pic_url: string;
   userID: string;
   username: string;
   id: string;
-}
+};
 
-export interface Caption {
+export type Caption = {
   text: string;
   pk: string;
   has_translation?: boolean;
-}
+};
 
-export interface Comment {
+export type Comment = {
   pk: string;
   child_comment_count: any;
   restricted_status: any;
@@ -308,9 +308,9 @@ export interface Comment {
   giphy_media_info: any;
   is_covered: boolean;
   __typename: string;
-}
+};
 
-export interface CommentAuthor {
+export type CommentAuthor = {
   pk: string;
   username: string;
   is_unpublished: any;
@@ -318,4 +318,4 @@ export interface CommentAuthor {
   id: string;
   is_verified: boolean;
   fbid_v2: string;
-}
+};
