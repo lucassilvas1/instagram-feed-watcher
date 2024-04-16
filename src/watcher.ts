@@ -238,14 +238,15 @@ export class Watcher {
     const onChange = async (posts: Post[]) => {
       latest = [];
 
-      listener(
-        posts.filter((post) => {
-          latest.push(post.id);
-          if (watched.has(post.id)) return false;
-          watched.set(post.id, 0);
-          return true;
-        })
-      );
+      posts = posts.filter((post) => {
+        latest.push(post.id);
+        // Is old and can be ignored
+        if (watched.has(post.id)) return false;
+        watched.set(post.id, 0);
+        return true;
+      });
+
+      if (posts.length) listener(posts);
     };
 
     this.#listeners.set(symbol, onChange);
