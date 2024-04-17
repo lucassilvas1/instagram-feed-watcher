@@ -5,6 +5,7 @@ import { cookiesToStr, getCookieStr, saveCookies } from "./session/utils";
 import {
   LoginError,
   MaxRetriesReachedError,
+  NodeContainersNotFoundError,
   UnexpectedStatusError,
 } from "./errors";
 import puppeteer from "puppeteer";
@@ -194,7 +195,7 @@ export class Watcher {
     const containers = getNodeContainers(html);
 
     if (!containers) {
-      throw new Error("Could not extract NodeContainers from HTML response.");
+      throw new NodeContainersNotFoundError(html);
     }
 
     return containers.map((container) => container.node.media);
