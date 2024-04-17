@@ -86,24 +86,28 @@ export class Watcher {
     return { ...Watcher.#defaultOptions };
   }
 
-  async #initialize(force = false) {
-    if (this.#initializing) return;
-    if (!force && this.#initialized) return;
+  async #initialize() {
+    if (this.#initializing || this.#initialized) return;
 
     this.#initializing = true;
 
     let cookies = getCookieStr(this.#options.cookieFilePath);
-    if (!cookies) {
-      cookies = await this.#login();
-      // If cookies are still `null` after logging in then something went wrong
-      // durign login
-      if (!cookies) throw new LoginError();
-    }
-
-    this.#setRequestConfig(cookies);
+    if (cookies) {
+      this.#setRequestConfig(cookies);
+    } else await this.#renewSession();
 
     this.#initializing = false;
     this.#initialized = true;
+  }
+
+  async #renewSession() {
+    const cookies = await this.#login();
+
+    // If cookies are still `null` after logging in then something went wrong
+    // durign login
+    if (!cookies) throw new LoginError();
+
+    this.#setRequestConfig(cookies);
   }
 
   #setRequestConfig(cookies: string) {
@@ -165,7 +169,7 @@ export class Watcher {
     } catch (error) {
       // "ERR_FR_TOO_MANY_REDIRECTS" most likely means your session has expired
       if (error.code === "ERR_FR_TOO_MANY_REDIRECTS") {
-        await this.#initialize(true);
+        await this.#renewSession();
         await sleep(...this.#options.retryCooldown);
 
         return this.#fetchFeedPage(tries + 1);
