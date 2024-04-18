@@ -30,10 +30,12 @@ export class UnexpectedStatusError extends CustomError {
     );
   }
 }
-export class NodeContainersNotFoundError extends CustomError {
-  constructor(body: string) {
+export class InfoNotFoundError extends CustomError {
+  constructor(variable: string, body: string) {
     super(
-      "Could not extract NodeContainers from HTML response body.\n\nResponse body:\n```\n" +
+      "Could not extract " +
+        variable +
+        " from HTML response body.\n\nResponse body:\n```\n" +
         body +
         "\n```"
     );
