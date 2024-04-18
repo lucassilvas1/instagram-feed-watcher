@@ -1,15 +1,21 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios from "axios";
 import { Post, NodeContainer } from "./types";
 import { COOKIE_FILE_PATH, USER_AGENT } from "./constants";
-import { cookiesToStr, getCookieStr, saveCookies } from "./session/utils";
+import {
+  Cookie,
+  cookiesToStr,
+  getCsrfToken,
+  getSavedCookies,
+  saveCookies,
+} from "./session/utils";
 import {
   LoginError,
   MaxRetriesReachedError,
-  NodeContainersNotFoundError,
+  InfoNotFoundError,
   UnexpectedStatusError,
 } from "./errors";
 import puppeteer from "puppeteer";
-import { random, sleep } from "./utils";
+import { findBetween, random, sleep } from "./utils";
 
 type Listener = (posts: Post[]) => void;
 /**
@@ -42,9 +48,8 @@ type WatcherOptions = {
   retryCooldown: Interval;
 };
 
-function getNodeContainers(html: string) {
-  const lines = html.split("\n"); // the HTML returned by Instagram is split in lines
-  const line = lines.find((line) =>
+function getNodeContainers(html: string[]) {
+  const line = html.find((line) =>
     // "RelayPrefetchedStreamCache" is unique to the script tag that contains
     // the posts. Look for it first to avoid using RegEx unnecessarily.
     line.slice(45, 200).includes("RelayPrefetchedStreamCache")
@@ -52,7 +57,7 @@ function getNodeContainers(html: string) {
   if (!line) return null;
   // The "node" array is between `"edges":` and `,"page_info"` in that line
   return JSON.parse(
-    line.match(/"edges":(.*?),"page_info"/)?.[1] ?? "null"
+    findBetween(line, `"edges":`, `,"page_info"`) ?? "null"
   ) as NodeContainer[];
 }
 
@@ -67,11 +72,11 @@ export class Watcher {
   #initializing = false;
   #initialized = false;
   #options: WatcherOptions;
-  #requestConfig: AxiosRequestConfig = {};
   #listeners: Map<Symbol, (containers: Post[]) => void> = new Map();
   #watchIntervalId?: NodeJS.Timeout;
   #username: string;
   #password: string;
+  #cookies: Cookie[] = [];
 
   constructor(
     username: string,
@@ -92,9 +97,9 @@ export class Watcher {
 
     this.#initializing = true;
 
-    let cookies = getCookieStr(this.#options.cookieFilePath);
-    if (cookies) {
-      this.#setRequestConfig(cookies);
+    let cookies = getSavedCookies(this.#options.cookieFilePath);
+    if (cookies && cookies.length) {
+      this.#cookies = cookies;
     } else await this.#renewSession();
 
     this.#initializing = false;
@@ -104,28 +109,31 @@ export class Watcher {
   async #renewSession() {
     const cookies = await this.#login();
 
-    // If cookies are still `null` after logging in then something went wrong
+    // If cookies are still empty after logging in then something went wrong
     // durign login
-    if (!cookies) throw new LoginError();
+    if (!cookies.length) throw new LoginError();
 
-    this.#setRequestConfig(cookies);
+    this.#cookies = cookies;
   }
 
-  #setRequestConfig(cookies: string) {
-    this.#requestConfig = {
+  #getRequestConfig() {
+    return {
       url: "https://www.instagram.com/?variant=following",
       headers: {
         "User-Agent": this.#options.userAgent,
         Accept:
           "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Encoding": "gzip, deflate, br",
         "Accept-Language": "en-US,en;q=0.5",
-        "Alt-Used": "www.instagram.com",
-        "Upgrade-Insecure-Requests": "1",
+        Connection: "keep-alive",
+        Cookie: cookiesToStr(this.#cookies),
+        Host: "www.instagram.com",
         "Sec-Fetch-Dest": "document",
         "Sec-Fetch-Mode": "navigate",
         "Sec-Fetch-Site": "none",
         "Sec-Fetch-User": "?1",
-        Cookie: cookies,
+        TE: "trailers",
+        "Upgrade-Insecure-Requests": 1,
       },
     };
   }
@@ -148,7 +156,7 @@ export class Watcher {
       page.click("button[type='submit']", { delay: 670 }),
     ]);
 
-    const cookies = await page.cookies().then(cookiesToStr);
+    const cookies = await page.cookies();
     saveCookies(this.#options.cookieFilePath, cookies);
 
     await browser.close();
@@ -156,17 +164,30 @@ export class Watcher {
     return cookies;
   }
 
-  async #fetchFeedPage(tries = 1): Promise<string> {
+  #updateCsrfToken(html: string[]) {
+    const token = getCsrfToken(html);
+    const csrfCookie = this.#cookies.find(
+      (cookie) => cookie.name === "csrftoken"
+    );
+    if (csrfCookie) csrfCookie.value = token;
+    else this.#cookies.push({ name: "csrftoken", value: token });
+  }
+
+  async #fetchFeedPage(tries = 1): Promise<string[]> {
     if (tries > this.#options.maxRetries) throw new MaxRetriesReachedError();
 
     await this.#initialize();
 
     try {
-      const res = await axios(this.#requestConfig);
+      const res = await axios(this.#getRequestConfig());
 
       if (res.status !== 200) throw new UnexpectedStatusError(res.status);
 
-      return res.data;
+      const lines = res.data.split("\n");
+      // Call it here to avoid having to split that massive HTML response twice
+      this.#updateCsrfToken(lines);
+
+      return lines;
     } catch (error) {
       // "ERR_FR_TOO_MANY_REDIRECTS" most likely means your session has expired
       if (error.code === "ERR_FR_TOO_MANY_REDIRECTS") {
@@ -195,7 +216,7 @@ export class Watcher {
     const containers = getNodeContainers(html);
 
     if (!containers) {
-      throw new NodeContainersNotFoundError(html);
+      throw new InfoNotFoundError("NodeContainers", html.join("\n"));
     }
 
     return containers.map((container) => container.node.media);
