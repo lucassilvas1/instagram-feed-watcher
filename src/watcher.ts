@@ -169,8 +169,11 @@ export class Watcher {
     const csrfCookie = this.#cookies.find(
       (cookie) => cookie.name === "csrftoken"
     );
+
     if (csrfCookie) csrfCookie.value = token;
     else this.#cookies.push({ name: "csrftoken", value: token });
+
+    saveCookies(this.#options.cookieFilePath, this.#cookies);
   }
 
   async #fetchFeedPage(tries = 1): Promise<string[]> {
